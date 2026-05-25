@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "60279180010",
+    "firebase_url": "https://teamtaskmanager-7d987-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "teamtaskmanager-7d987",
+    "storage_bucket": "teamtaskmanager-7d987.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60279180010:android:4630489c7f78dc8ceae593",
+        "android_client_info": {
+          "package_name": "com.example.teamtaskmanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb-SxWko1PJYQPwz6Zeuq6R1kb2qIHHYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
