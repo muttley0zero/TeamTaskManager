@@ -1,5 +1,6 @@
 package com.example.teamtaskmanager.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Delete
@@ -18,6 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -41,7 +46,7 @@ fun TaskListScreen(
     val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
     LaunchedEffect(teamId) {
-        if (teamId.isNotBlank()) taskViewModel.loadTasks(teamId)
+        if (teamId.isNotBlank()) taskViewModel.loadTasks(teamId, uid)
     }
 
     val tasks by taskViewModel.tasks.collectAsState()
@@ -64,9 +69,30 @@ fun TaskListScreen(
                             Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Wyloguj się")
                         }
                         Spacer(Modifier.width(8.dp))
+                        
+                        val clipboardManager = LocalClipboardManager.current
+                        val context = LocalContext.current
+
                         Column {
                             Text("Zadania zespołu")
-                            Text("Team ID: $teamId", style = MaterialTheme.typography.bodySmall)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.clickable {
+                                    if (teamId.isNotBlank()) {
+                                        clipboardManager.setText(AnnotatedString(teamId))
+                                        Toast.makeText(context, "ID zespołu skopiowane!", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            ) {
+                                Text("Team ID: $teamId", style = MaterialTheme.typography.bodySmall)
+                                Spacer(Modifier.width(4.dp))
+                                Icon(
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Kopiuj ID",
+                                    modifier = Modifier.size(14.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 },

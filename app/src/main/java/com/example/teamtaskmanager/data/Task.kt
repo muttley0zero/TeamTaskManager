@@ -12,5 +12,6 @@ data class Task(
     val priority: String = "medium",  // Priorytet
     val category: String = "",        // Kategoria
     val dueDate: Long = 0L,
-    val startDate: Long = 0L
+    val startDate: Long = 0L,
+    val createdAt: Long = 0L
 )

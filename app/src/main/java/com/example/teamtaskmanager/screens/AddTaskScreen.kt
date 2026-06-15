@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -85,18 +86,22 @@ fun AddTaskScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Wybór użytkownika
-            Box(modifier = Modifier.fillMaxWidth()) {
+            ExposedDropdownMenuBox(
+                expanded = expandedUsers,
+                onExpandedChange = { expandedUsers = !expandedUsers },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 OutlinedTextField(
-                    value = members.firstOrNull { it.first == selectedUserId }?.second?.email
-                        ?: "Wybierz użytkownika",
+                    value = uniqueFilteredMembers.firstOrNull { it.first == selectedUserId }?.second?.email ?: "",
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Przypisz do") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expandedUsers = true }
+                    placeholder = { Text("Wybierz użytkownika") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedUsers) },
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
                 )
-                DropdownMenu(
+                ExposedDropdownMenu(
                     expanded = expandedUsers,
                     onDismissRequest = { expandedUsers = false }
                 ) {
@@ -127,17 +132,21 @@ fun AddTaskScreen(
             )
 
             // Priorytet
-            Box(modifier = Modifier.fillMaxWidth()) {
+            ExposedDropdownMenuBox(
+                expanded = expandedPriority,
+                onExpandedChange = { expandedPriority = !expandedPriority },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 OutlinedTextField(
                     value = priority,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Priorytet") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expandedPriority = true }
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPriority) },
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
                 )
-                DropdownMenu(
+                ExposedDropdownMenu(
                     expanded = expandedPriority,
                     onDismissRequest = { expandedPriority = false }
                 ) {
@@ -162,15 +171,20 @@ fun AddTaskScreen(
             )
 
             // Data rozpoczęcia
-            OutlinedTextField(
-                value = startDate?.format(dateFormatter) ?: "",
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Data rozpoczęcia") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showStartPicker = true }
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = startDate?.format(dateFormatter) ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Data rozpoczęcia") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { showStartPicker = true }
+                )
+            }
             if (showStartPicker) {
                 val state = rememberDatePickerState()
                 DatePickerDialog(
@@ -194,15 +208,20 @@ fun AddTaskScreen(
             }
 
             // Data zakończenia
-            OutlinedTextField(
-                value = endDate?.format(dateFormatter) ?: "",
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Data zakończenia") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showEndPicker = true }
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = endDate?.format(dateFormatter) ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Data zakończenia") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { showEndPicker = true }
+                )
+            }
             if (showEndPicker) {
                 val state = rememberDatePickerState()
                 DatePickerDialog(
@@ -246,7 +265,8 @@ fun AddTaskScreen(
                             priority = priority,
                             category = category,
                             startDate = startDate!!.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                            dueDate = endDate!!.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                            dueDate = endDate!!.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                            createdAt = System.currentTimeMillis()
                         )
                     )
                     navController.popBackStack()

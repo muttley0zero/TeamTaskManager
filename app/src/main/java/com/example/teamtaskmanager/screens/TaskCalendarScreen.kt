@@ -1,8 +1,6 @@
 package com.example.teamtaskmanager.screens
 
-import android.content.Intent
 import android.os.Build
-import android.provider.CalendarContract
 import android.widget.CalendarView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -10,12 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +32,6 @@ fun TaskCalendarScreen(
     navController: NavController,
     taskViewModel: TaskViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val user by authViewModel.appUser.collectAsState()
     if (user == null) return
 
@@ -44,9 +39,9 @@ fun TaskCalendarScreen(
     val uid = FirebaseAuth.getInstance().currentUser!!.uid
     val teamId = user!!.teamId
 
-    // Load tasks
-    LaunchedEffect(teamId) {
-        if (teamId.isNotBlank()) taskViewModel.loadTasks(teamId)
+    // Load tasks - reagujemy na zmianę teamId i uid
+    LaunchedEffect(teamId, uid) {
+        if (teamId.isNotBlank()) taskViewModel.loadTasks(teamId, uid)
     }
     val tasks by taskViewModel.tasks.collectAsState()
 
@@ -59,10 +54,10 @@ fun TaskCalendarScreen(
                 else    -> t.assignedToUserId == uid
             }
         }.mapNotNull { t ->
-            t.dueDate?.let { due ->
-                val date = Instant.ofEpochMilli(due).atZone(ZoneId.systemDefault()).toLocalDate()
+            if (t.dueDate > 0) {
+                val date = Instant.ofEpochMilli(t.dueDate).atZone(ZoneId.systemDefault()).toLocalDate()
                 date to t
-            }
+            } else null
         }.groupBy({ it.first }, { it.second })
     }
 
@@ -82,18 +77,28 @@ fun TaskCalendarScreen(
         }
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding)) {
-            AndroidView(
-                factory = { ctx ->
-                    CalendarView(ctx).apply {
-                        setOnDateChangeListener { _, year, month, dayOfMonth ->
-                            selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                        }
-                    }
-                },
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-            )
+                    .padding(8.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                tonalElevation = 2.dp
+            ) {
+                AndroidView(
+                    factory = { ctx ->
+                        CalendarView(ctx).apply {
+                            setOnDateChangeListener { _, year, month, dayOfMonth ->
+                                selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(8.dp)
+                )
+            }
 
             Spacer(Modifier.height(8.dp))
             Text(
@@ -118,6 +123,7 @@ fun TaskCalendarScreen(
                             Column(Modifier.padding(16.dp)) {
                                 Text("Tytuł: ${task.title}", style = MaterialTheme.typography.bodyLarge)
                                 Text("Opis: ${task.description}", style = MaterialTheme.typography.bodySmall)
+                                Text("Status: ${task.status}", style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }

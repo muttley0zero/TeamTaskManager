@@ -135,6 +135,7 @@ fun AppNavGraph() {
         composable("edit_task/{taskId}") { backStackEntry ->
             val taskId = backStackEntry.arguments?.getString("taskId").orEmpty()
             EditTaskScreen(
+                authViewModel = authViewModel,
                 navController = navController,
                 taskId = taskId
             )

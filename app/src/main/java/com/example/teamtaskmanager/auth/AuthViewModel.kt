@@ -7,6 +7,7 @@ import com.example.teamtaskmanager.viewmodel.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -98,6 +99,8 @@ class AuthViewModel @Inject constructor(
                 val user = doc.toObject(User::class.java)
                 if (user != null) {
                     _appUser.value = user
+                    // Aktualizacja tokenu FCM przy każdym logowaniu/pobraniu profilu
+                    updateFcmToken(uid)
                     when {
                         user.role != "boss" && user.status == "pending" ->
                             _navigateToPendingScreen.value = true
@@ -112,6 +115,15 @@ class AuthViewModel @Inject constructor(
                 _isLoading.value = false
                 _errorMessage.value = "Błąd pobierania danych: ${e.message}"
             }
+    }
+
+    private fun updateFcmToken(uid: String) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                firestore.collection("users").document(uid).update("fcmToken", token)
+            }
+        }
     }
 
     /** Rejestracja */
