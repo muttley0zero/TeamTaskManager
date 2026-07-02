@@ -1,21 +1,23 @@
 # Dokumentacja techniczna aplikacji Team Task Manager  
 
-![main_program.png](assets/main_program.png "Główne okno programu")
+<div align="center">
+  <img src="assets/main_program.jpg" width="300">
+</div>
 
 **Autor:** Bartosz Pawlaczyk
 
 ---
 
-<a id="spis-tresci"></a>
 ## Spis treści
+<a name="spis-tresci"></a>
 
-1. [Cel projektu](#cel-projektu)  
-2. [Główne funkcjonalności](#glowne-funkcjonalnosci)  
-3. [Wykorzystane biblioteki i technologie](#wykorzystane-biblioteki-i-technologie)  
-4. [Architektura aplikacji (MVVM)](#architektura-aplikacji-mvvm)  
-5. [Struktura projektu](#struktura-projektu)  
-6. [Schemat przepływu danych](#schemat-przeplywu-danych)  
-7. [Pierwsze kroki: Ekrany startowe](#pierwsze-kroki-ekrany-startowe)
+1. **[Cel projektu](#cel-projektu)**  
+2. **[Główne funkcjonalności](#glowne-funkcjonalnosci)**  
+3. **[Wykorzystane biblioteki i technologie](#wykorzystane-biblioteki-i-technologie)**  
+4. **[Architektura aplikacji (mvvm)](#architektura-aplikacji-mvvm)**  
+5. **[Struktura projektu](#struktura-projektu)**  
+6. **[Schemat przeplywu-danych](#schemat-przeplywu-danych)**  
+7. **[Pierwsze kroki: Ekrany startowe](#pierwsze-kroki-ekrany-startowe)**
 
 ---
 
@@ -31,7 +33,7 @@ Aplikacja została zbudowana w oparciu o nowoczesne standardy Androida, wykorzys
 ---
 
 ## Cel projektu
-<a id="cel-projektu"></a>
+<a name="cel-projektu"></a>
 
 Głównym założeniem było stworzenie narzędzia eliminującego opóźnienia w komunikacji zespołowej. Kluczowe cele techniczne:
 
@@ -39,7 +41,7 @@ Głównym założeniem było stworzenie narzędzia eliminującego opóźnienia w
 - **Skalowalność** – możliwość łatwego dodawania modułów (np. kalendarz, analityka)
 - **Bezpieczeństwo** – RBAC (Role-Based Access Control)
 
-[Powrót do spisu treści](#spis-tresci)
+**[Powrót do spisu treści](#spis-tresci)**
 
 ---
 
@@ -124,7 +126,7 @@ Aplikacja wykorzystuje wzorzec **Model-View-ViewModel**, zapewniający separacj�
 ---
 
 ## Schemat przepływu danych
-<a id="schemat-przepływu-danych"></a>
+<a id="schemat-przeplywu-danych"></a>
 
 <div align="center">
   <img src="assets/schemat1.png" width="800">
