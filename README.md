@@ -8,8 +8,8 @@
 
 ---
 
-## Spis treści
 <a name="spis-tresci"></a>
+## Spis treści
 
 1. **[Cel projektu](#cel-projektu)**  
 2. **[Główne funkcjonalności](#glowne-funkcjonalnosci)**  
